@@ -143,12 +143,12 @@
 
     #wish-text {
       position: absolute;
-      top: 20%;
+      top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-family: 'Segoe UI', sans-serif;
-      font-size: 2.5rem;
-      color: rgba(255, 255, 255, 0.75);
+      font-family: 'KaiTi', '楷体', 'STKaiti', serif;
+      font-size: 2rem;
+      color: rgba(255, 255, 255, 0.9);
       z-index: 10;
       opacity: 0;
       pointer-events: none;
@@ -163,7 +163,7 @@
 
     @keyframes wishFloat {
       0% { opacity: 0; transform: translate(-50%, 0%); }
-      100% { opacity: 0.75; transform: translate(-50%, -50%); }
+      100% { opacity: 0.9; transform: translate(-50%, -50%); }
     }
 
     #particle-canvas {
@@ -180,7 +180,7 @@
       .modal-content { width: 90%; padding: 20px; }
       .modal-title { font-size: 1.5rem; }
       #christmas-text { font-size: 2.5rem; top: 10%; }
-      #wish-text { font-size: 1.5rem; top: 18%; }
+      #wish-text { font-size: 1.2rem; top: 45%; }
     }
   </style>
 </head>
@@ -612,7 +612,7 @@
         setTimeout(() => {
             wishText.classList.add('wish-float-in');
             setTimeout(() => explodeText(), 2000);
-        }, 3000);
+        }, 4000);
     });
 
     function explodeText() {
@@ -620,19 +620,18 @@
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
 
-      for (let i = 0; i < 80; i++) {
+      for (let i = 0; i < 200; i++) {
         const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 4 + 2;
+        const speed = Math.random() * 6 + 3;
         particles.push({
-          x: centerX + (Math.random() - 0.5) * rect.width,
-          y: centerY + (Math.random() - 0.5) * rect.height,
+          x: centerX + (Math.random() - 0.5) * rect.width * 1.5,
+          y: centerY + (Math.random() - 0.5) * rect.height * 1.5,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
           life: 1,
-          size: Math.random() * 4 + 2
+          size: Math.random() * 5 + 3
         });
       }
-      wishText.style.transition = 'opacity 0.3s';
       wishText.style.opacity = '0';
       animateParticles();
     }
