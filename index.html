@@ -146,8 +146,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-family: 'KaiTi', '楷体', 'STKaiti', serif;
-      font-size: 2rem;
+      font-family: 'LiSu', '隶书', 'STLiti', serif;
+      font-size: 2.5rem;
       color: rgba(255, 255, 255, 0.9);
       z-index: 10;
       opacity: 0;
@@ -180,7 +180,7 @@
       .modal-content { width: 90%; padding: 20px; }
       .modal-title { font-size: 1.5rem; }
       #christmas-text { font-size: 2.5rem; top: 10%; }
-      #wish-text { font-size: 1.2rem; top: 45%; }
+      #wish-text { font-size: 1.5rem; top: 45%; }
     }
   </style>
 </head>
@@ -584,6 +584,21 @@
     const pCtx = particleCanvas.getContext('2d');
     let particles = [];
 
+    const snowflakeImages = [];
+    const snowflakeSrcs = [
+      "https://assets.codepen.io/3685267/snowflake1.png",
+      "https://assets.codepen.io/3685267/snowflake2.png",
+      "https://assets.codepen.io/3685267/snowflake3.png",
+      "https://assets.codepen.io/3685267/snowflake4.png",
+      "https://assets.codepen.io/3685267/snowflake5.png"
+    ];
+    snowflakeSrcs.forEach(src => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = src;
+      snowflakeImages.push(img);
+    });
+
     function resizeParticleCanvas() {
       particleCanvas.width = window.innerWidth;
       particleCanvas.height = window.innerHeight;
@@ -620,34 +635,48 @@
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
 
-      for (let i = 0; i < 200; i++) {
+      for (let i = 0; i < 150; i++) {
         const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 6 + 3;
+        const speed = Math.random() * 4 + 2;
         particles.push({
-          x: centerX + (Math.random() - 0.5) * rect.width * 1.5,
-          y: centerY + (Math.random() - 0.5) * rect.height * 1.5,
+          x: centerX + (Math.random() - 0.5) * rect.width * 1.2,
+          y: centerY + (Math.random() - 0.5) * rect.height,
           vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed,
+          vy: Math.sin(angle) * speed - 2,
           life: 1,
-          size: Math.random() * 5 + 3
+          size: Math.random() * 20 + 15,
+          img: snowflakeImages[Math.floor(Math.random() * snowflakeImages.length)],
+          phase: Math.random() * Math.PI * 2,
+          rotation: Math.random() * Math.PI * 2,
+          rotationSpeed: (Math.random() - 0.5) * 0.1
         });
       }
       wishText.style.opacity = '0';
       animateParticles();
     }
 
+    let animationTime = 0;
     function animateParticles() {
+      animationTime += 16;
       pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
       particles = particles.filter(p => p.life > 0);
       particles.forEach(p => {
-        p.x += p.vx;
+        p.x += p.vx + Math.sin(animationTime * 0.002 + p.phase) * 0.8;
         p.y += p.vy;
-        p.vy += 0.05;
-        p.life -= 0.015;
-        pCtx.beginPath();
-        pCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        pCtx.fillStyle = `rgba(255, 255, 255, ${p.life * 0.8})`;
-        pCtx.fill();
+        p.vx *= 0.98;
+        p.vy += 0.08;
+        p.vy = Math.min(p.vy, 3);
+        p.life -= 0.008;
+        p.rotation += p.rotationSpeed;
+
+        pCtx.save();
+        pCtx.translate(p.x, p.y);
+        pCtx.rotate(p.rotation);
+        pCtx.globalAlpha = p.life * 0.9;
+        if (p.img && p.img.complete) {
+          pCtx.drawImage(p.img, -p.size / 2, -p.size / 2, p.size, p.size);
+        }
+        pCtx.restore();
       });
       if (particles.length > 0) requestAnimationFrame(animateParticles);
     }
