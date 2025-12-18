@@ -644,14 +644,15 @@
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed - 2,
           life: 1,
-          size: Math.random() * 20 + 15,
+          size: Math.random() * 10 + 8,
           img: snowflakeImages[Math.floor(Math.random() * snowflakeImages.length)],
           phase: Math.random() * Math.PI * 2,
           rotation: Math.random() * Math.PI * 2,
           rotationSpeed: (Math.random() - 0.5) * 0.1
         });
       }
-      wishText.style.opacity = '0';
+      wishText.classList.remove('wish-float-in');
+      wishText.style.display = 'none';
       animateParticles();
     }
 
